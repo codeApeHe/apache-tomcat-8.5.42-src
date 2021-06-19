@@ -990,6 +990,11 @@ public class Connector extends LifecycleMBeanBase  {
         }
 
         try {
+            /**
+             * 初始化protocolHandler
+             * -> org.apache.coyote.http11.AbstractHttp11Protocol#init()
+             *  -> org.apache.coyote.AbstractProtocol#init()
+             */
             protocolHandler.init();
         } catch (Exception e) {
             throw new LifecycleException(

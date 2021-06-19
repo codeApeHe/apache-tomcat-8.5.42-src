@@ -526,23 +526,22 @@ public class Catalina {
 
 
     /**
-     * Start a new server instance.
+     * catalina.load()  => 启动一个新的server实例
      */
     public void load() {
 
-        if (loaded) {
-            return;
-        }
+        if (loaded) { return; }
         loaded = true;
 
         long t1 = System.nanoTime();
 
         initDirs();
-
         // Before digester - it may be needed
         initNaming();
-
-        // Create and execute our Digester
+        /**
+         * Create and execute our Digester
+         *   Digester是tomcat的xml文件（server.xml）的解析工具
+         */
         Digester digester = createStartDigester();
 
         InputSource inputSource = null;
@@ -630,12 +629,18 @@ public class Catalina {
         getServer().setCatalina(this);
         getServer().setCatalinaHome(Bootstrap.getCatalinaHomeFile());
         getServer().setCatalinaBase(Bootstrap.getCatalinaBaseFile());
-
         // Stream redirection
         initStreams();
 
         // Start the new server
         try {
+            /**
+             * 调用server.init()方法
+             *  -> org.apache.catalina.Lifecycle#init()
+             *      -> org.apache.catalina.util.LifecycleBase#init()
+             *          -> org.apache.catalina.util.LifecycleBase#initInternal()
+             *              -> org.apache.catalina.core.StandardServer#initInternal()
+             */
             getServer().init();
         } catch (LifecycleException e) {
             if (Boolean.getBoolean("org.apache.catalina.startup.EXIT_ON_INIT_FAILURE")) {

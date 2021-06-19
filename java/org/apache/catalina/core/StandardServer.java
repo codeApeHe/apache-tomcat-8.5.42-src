@@ -870,7 +870,13 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
                 cl = cl.getParent();
             }
         }
-        // Initialize our defined Services
+        /**
+         * 调用【所有】service.init():
+         *  org.apache.catalina.Lifecycle#init()
+         *      -> org.apache.catalina.util.LifecycleBase#init()
+         *          -> org.apache.catalina.util.LifecycleBase#initInternal()
+         *              -> org.apache.catalina.core.StandardService#initInternal()
+         */
         for (int i = 0; i < services.length; i++) {
             services[i].init();
         }

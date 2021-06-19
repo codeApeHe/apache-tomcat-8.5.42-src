@@ -1194,6 +1194,9 @@ public abstract class AbstractEndpoint<S> {
         startInternal();
     }
 
+    /**
+     *
+     */
     protected final void startAcceptorThreads() {
         int count = getAcceptorThreadCount();
         acceptors = new Acceptor[count];

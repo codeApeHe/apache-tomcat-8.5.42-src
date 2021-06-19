@@ -416,13 +416,17 @@ public class StandardService extends LifecycleMBeanBase implements Service {
             log.info(sm.getString("standardService.start.name", this.name));
         setState(LifecycleState.STARTING);
 
-        // Start our defined Container first
+        /**
+         * engine.start()
+         */
         if (engine != null) {
             synchronized (engine) {
                 engine.start();
             }
         }
-
+        /**
+         * executor.start()
+         */
         synchronized (executors) {
             for (Executor executor: executors) {
                 executor.start();
@@ -431,7 +435,9 @@ public class StandardService extends LifecycleMBeanBase implements Service {
 
         mapperListener.start();
 
-        // Start our defined Connectors second
+        /**
+         * connector.start()
+         */
         synchronized (connectorsLock) {
             for (Connector connector: connectors) {
                 try {
@@ -530,11 +536,15 @@ public class StandardService extends LifecycleMBeanBase implements Service {
 
         super.initInternal();
 
+        /**
+         * 初始化engine
+         */
         if (engine != null) {
             engine.init();
         }
-
-        // Initialize any Executors
+        /**
+         * 初始化execute
+         */
         for (Executor executor : findExecutors()) {
             if (executor instanceof JmxEnabled) {
                 ((JmxEnabled) executor).setDomain(getDomain());
@@ -545,10 +555,15 @@ public class StandardService extends LifecycleMBeanBase implements Service {
         // Initialize mapper listener
         mapperListener.init();
 
-        // Initialize our defined Connectors
+        /**
+         * 初始化connectors
+         */
         synchronized (connectorsLock) {
             for (Connector connector : connectors) {
                 try {
+                    /**
+                     * 调用org.apache.catalina.connector.Connector.initInternal()
+                     */
                     connector.init();
                 } catch (Exception e) {
                     String message = sm.getString(

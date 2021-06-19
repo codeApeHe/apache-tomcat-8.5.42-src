@@ -279,7 +279,9 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
                 pollerThread.setDaemon(true);
                 pollerThread.start();
             }
-
+            /**
+             * 开始接收请求的线程
+             */
             startAcceptorThreads();
         }
     }

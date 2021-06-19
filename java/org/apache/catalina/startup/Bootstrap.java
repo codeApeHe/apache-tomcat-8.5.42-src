@@ -253,20 +253,20 @@ public final class Bootstrap {
      * @throws Exception Fatal initialization error
      */
     public void init() throws Exception {
-
+        // 初始化类加载器
         initClassLoaders();
 
         Thread.currentThread().setContextClassLoader(catalinaLoader);
 
         SecurityClassLoad.securityClassLoad(catalinaLoader);
 
-        // Load our startup class and call its process() method
+        // Load our startup class and call its process() method  加载Catalina
         if (log.isDebugEnabled())
             log.debug("Loading startup class");
         Class<?> startupClass = catalinaLoader.loadClass("org.apache.catalina.startup.Catalina");
         Object startupInstance = startupClass.getConstructor().newInstance();
 
-        // Set the shared extensions class loader
+        // Set the shared extensions class loader：catalinaLoader的父加载器设置为sharedLoader
         if (log.isDebugEnabled())
             log.debug("Setting startup class properties");
         String methodName = "setParentClassLoader";
@@ -277,14 +277,15 @@ public final class Bootstrap {
         Method method =
             startupInstance.getClass().getMethod(methodName, paramTypes);
         method.invoke(startupInstance, paramValues);
-
+        // 将创建的Catalina实列赋值给catalinaDaemon
         catalinaDaemon = startupInstance;
 
     }
 
 
     /**
-     * Load daemon.
+     * 该方法的目的：
+     *      调用 catalina.load(args)
      */
     private void load(String[] arguments)
         throws Exception {
@@ -302,12 +303,11 @@ public final class Bootstrap {
             param = new Object[1];
             param[0] = arguments;
         }
-        Method method =
-            catalinaDaemon.getClass().getMethod(methodName, paramTypes);
+        Method method = catalinaDaemon.getClass().getMethod(methodName, paramTypes);
         if (log.isDebugEnabled())
             log.debug("Calling startup class " + method);
+        // 反射调用Catalina的load()
         method.invoke(catalinaDaemon, param);
-
     }
 
 
@@ -449,8 +449,8 @@ public final class Bootstrap {
 
 
     /**
-     * Main method and entry point when starting Tomcat via the provided
-     * scripts.
+     * Tomcat启动入口
+     *
      *
      * @param args Command line arguments to be processed
      */
